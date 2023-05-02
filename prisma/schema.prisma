@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int               @id @unique @default(autoincrement())
+  email             String            @db.VarChar(100)
+  accountNumber     String?           @db.VarChar(100)
+  createdAt         DateTime          @default(now())
+  dealCount         Int               @default(0)
+  nickName          String            @db.VarChar(100)
+  openChatUrl       String?           @db.VarChar(100)
+  password          String
+  phoneNumber       String?           @db.VarChar(100)
+  profileImageUrl   String
+  purchaseCount     Int               @default(0)
+  purchaseMoney     Int               @default(0)
+  saleCount         Int               @default(0)
+  saleMoney         Int               @default(0)
+  socialId          String            @db.VarChar(100)
+  twitterMessageUrl String?           @db.VarChar(100)
+  updatedAt         DateTime          @updatedAt
+  bankName          String?           @db.VarChar(100)
+  depositorName     String?           @db.VarChar(100)
+  notifications     Notification[]
+  purchaseSuggests  PurchaseSuggest[]
+  salesPosts        SalesPost[]
+  shippingInfo      ShippingInfo?
+}
+
+model Notification {
+  id        Int      @id @unique @default(autoincrement())
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ShippingInfo {
+  id            Int      @id @unique @default(autoincrement())
+  receiverName  String?  @db.VarChar(100)
+  zipCode       String?  @db.VarChar(100)
+  address       String?  @db.VarChar(100)
+  detailAddress String?  @db.VarChar(100)
+  cuStoreName   String?  @db.VarChar(100)
+  gsStoreName   String?  @db.VarChar(100)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        Int      @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SalesPost {
+  id                Int               @id @unique @default(autoincrement())
+  mainImageUrl      String
+  productCount      Int
+  price             Int
+  certificationWord String            @db.VarChar(100)
+  description       String
+  status            Int               @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  sellorId          Int
+  salesOption       String?           @db.VarChar(100)
+  priceOption       String            @db.VarChar(100)
+  certifications    Certification[]
+  purchaseSuggests  PurchaseSuggest[]
+  sellor            User              @relation(fields: [sellorId], references: [id], onDelete: Cascade)
+  ShippingOptions   ShippingOption[]  @relation("SalesPostToShippingOption")
+}
+
+model Certification {
+  id          Int       @id @unique @default(autoincrement())
+  imageUrl    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  salesPostId Int
+  salespost   SalesPost @relation(fields: [salesPostId], references: [id], onDelete: Cascade)
+}
+
+model ShippingOption {
+  id               Int               @id @unique @default(autoincrement())
+  name             String            @unique @db.VarChar(100)
+  price            Int
+  purchaseSuggests PurchaseSuggest[]
+  salesPosts       SalesPost[]       @relation("SalesPostToShippingOption")
+}
+
+model PurchaseSuggest {
+  id               Int            @id @unique @default(autoincrement())
+  imageUrl         String
+  price            Int
+  status           Int            @default(0)
+  productCount     Int
+  description      String
+  invoiceNumber    String?        @db.VarChar(100)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  salesPostId      Int
+  suggesterId      Int
+  shippingOptionId Int
+  purchaseOption   String         @db.VarChar(100)
+  invoiceDeadline  DateTime?      @db.Date
+  salesPost        SalesPost      @relation(fields: [salesPostId], references: [id], onDelete: Cascade)
+  shippingOption   ShippingOption @relation(fields: [shippingOptionId], references: [id], onDelete: Cascade)
+  suggester        User           @relation(fields: [suggesterId], references: [id], onDelete: Cascade)
+}

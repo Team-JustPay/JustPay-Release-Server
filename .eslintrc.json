@@ -1,0 +1,69 @@
+    {
+        "env": {
+          "es2021": true,
+          "node": true,
+          "jest": true
+        },
+        "extends": [
+          "eslint:recommended",
+          "plugin:@typescript-eslint/eslint-recommended",
+          "plugin:@typescript-eslint/recommended",
+          "plugin:prettier/recommended",
+          "prettier/prettier",
+          "plugin:import/recommended"
+        ],
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+          "project": ["./tsconfig.json", "./jest.config.js"],
+          "ecmaVersion": "latest",
+          "sourceType": "module"
+        },
+        "plugins": ["@typescript-eslint", "prettier"],
+        "rules": {
+          "camelcase": "error",
+          "comma-dangle": ["error", "always-multiline"],
+          "no-console": ["warn"],
+          "@typescript-eslint/no-var-requires": "off",
+          "no-constant-condition": ["error", { "checkLoops": true }],
+          "no-restricted-syntax": [
+            "error",
+            {
+              "selector": "LabeledStatement",
+              "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+            },
+            {
+              "selector": "WithStatement",
+              "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+            }
+          ],
+          "no-use-before-define": ["off", { "functions": false }],
+          "no-unused-expressions": ["error", { "allowTaggedTemplates": true }],
+          "prefer-const": [
+            "error",
+            { "destructuring": "all" }
+          ],
+          "prefer-destructuring": ["error", { "array": false, "object": false }, { "enforceForRenamedProperties": true }],
+          "spaced-comment": ["error", "always"],
+          "import/extensions": ["error", "never"],
+          "import/no-unresolved": "off",
+          "import/order": [
+            "error",
+            {
+              "groups": [
+                "builtin",
+                "external",
+                "internal",
+                "parent",
+                "sibling"
+              ],
+              "newlines-between": "always",
+              "alphabetize": {
+                "order": "asc",
+                "caseInsensitive": false
+              }
+            }
+          ],
+          "import/prefer-default-export": "off"
+        },
+        "ignorePatterns": ["dist/", "node_modules/", "jest.config.js", "babel.config.js", "__test__"]
+      }
